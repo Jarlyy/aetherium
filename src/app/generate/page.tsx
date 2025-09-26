@@ -118,19 +118,19 @@ export default function GeneratePage() {
           <div className="max-w-4xl mx-auto">
             {/* Форма ввода */}
             <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-lg">Описание</h3>
-                  <Textarea
-                    id="prompt"
-                    placeholder="например, современный деревянный стул с мягкой обивкой"
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    rows={10}
-                    disabled={isGenerating}
-                    className="resize-none"
-                  />
-                </div>
+              <CardHeader>
+                <CardTitle>Описание</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                <Textarea
+                  id="prompt"
+                  placeholder="например, современный деревянный стул с мягкой обивкой"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  rows={10}
+                  disabled={isGenerating}
+                  className="resize-none"
+                />
 
                 <Button 
                   onClick={handleGenerate}
