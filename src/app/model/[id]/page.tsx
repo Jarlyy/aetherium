@@ -9,9 +9,9 @@ import Link from "next/link";
 import type { Model3D } from "@/types/model";
 
 interface ModelPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function ModelPage({ params }: ModelPageProps) {
@@ -20,12 +20,23 @@ export default function ModelPage({ params }: ModelPageProps) {
   const [modelData, setModelData] = useState<Model3D | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paramId, setParamId] = useState<string | null>(null);
 
   // Загрузка данных модели
   useEffect(() => {
+    const loadParams = async () => {
+      const resolvedParams = await params;
+      setParamId(resolvedParams.id);
+    };
+    loadParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!paramId) return;
+    
     const fetchModel = async () => {
       try {
-        const response = await fetch(`/api/models/${params.id}`);
+        const response = await fetch(`/api/models/${paramId}`);
         const result = await response.json();
         
         if (result.success) {
@@ -41,7 +52,7 @@ export default function ModelPage({ params }: ModelPageProps) {
     };
 
     fetchModel();
-  }, [params.id]);
+  }, [paramId]);
   
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -52,7 +63,9 @@ export default function ModelPage({ params }: ModelPageProps) {
   };
 
   const handleDownload = (format: string) => {
-    window.open(`/api/download/${params.id}?format=${format}`, '_blank');
+    if (paramId) {
+      window.open(`/api/download/${paramId}?format=${format}`, '_blank');
+    }
   };
 
   if (loading) {
