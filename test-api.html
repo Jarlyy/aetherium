@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>Тест API генерации 3D</h1>
+    <button onclick="testAPI()">Тестировать API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Тестирую API...';
+            
+            try {
+                console.log('🚀 Отправляю запрос на генерацию...');
+                
+                const response = await fetch('/api/generate/3d', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: 'красивая машинка',
+                        style: 'realistic',
+                        quality: 'medium'
+                    }),
+                });
+                
+                console.log('📡 Получен ответ:', response.status);
+                
+                const result = await response.json();
+                console.log('📄 Данные ответа:', result);
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <h3>✅ Успешно!</h3>
+                        <p><strong>Model ID:</strong> ${result.data.modelId}</p>
+                        <p><strong>File URL:</strong> <a href="${result.data.fileUrl}" target="_blank">${result.data.fileUrl}</a></p>
+                        <p><strong>Preview URL:</strong> <a href="${result.data.previewUrl}" target="_blank">${result.data.previewUrl}</a></p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>❌ Ошибка!</h3>
+                        <p>${result.error}</p>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('💥 Ошибка:', error);
+                resultDiv.innerHTML = `
+                    <h3>💥 Ошибка!</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
